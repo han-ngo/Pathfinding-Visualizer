@@ -1,0 +1,14 @@
+.node {
+  display: inline-flex;
+  width: 25px;
+  height: 25px;
+  outline: 1px solid gray;
+}
+
+.start-node {
+  background-color: aqua;
+}
+
+.target-node {
+  background-color: pink;
+}
