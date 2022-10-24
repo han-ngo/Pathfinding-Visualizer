@@ -91,38 +91,39 @@ export default class PathfindingVisualizer extends Component {
   }
 
   animatePathFindingAlgo(path, visited) {
-    for (let i = 1; i < visited.length-1; i++) { // skip starting and targeting node
+    for (let i = 0; i <= visited.length; i++) {
       // mark shortest path found
-      if (i === visited.length-2) {
+      if (i === visited.length) {
         setTimeout(() => {
           this.animateShortestPath(path);
         }, 10 * i);
+        return;
       }
       // mark node as visited
       setTimeout(() => {
         const node = visited[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node visited-node';
+        if (!node.isStart && !node.isTarget) { // exclude animation on start & target node
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            'node visited-node';
+        }
       }, 10 * i);
     }
   }
 
   animateShortestPath(path) {
-    for (let i = 1; i < path.length; i++) { // skip starting and targeting node
+    if (!path) {
+      window.alert("Path is not found!");
+      return;
+    }
+    for (let i = 0; i < path.length; i++) {
       // mark shortest path found
       setTimeout(() => {
         const node = path[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node shortestPath-node';
+        if (!node.isStart && !node.isTarget) { // exclude animation on start & target node
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            'node shortestPath-node';
+        }
       }, 50 * i);
-    }
-  }
-
-  markPath(path) {
-    for (const node of path) {
-      const {row, col, isStart, isTarget} = node
-      console.log(node.row + ' ' + node.col);
-      document.getElementById(`node-${node.row}-${node.col}`).classList.add('shortestPath');
     }
   }
 }
@@ -156,11 +157,13 @@ const createNewGridOnWallToggled = (grid, row, col) => {
   const newGrid = grid.slice();
   // toggle isWall for new node
   const node = grid[row][col];
-  const newNode = {
-    ...node,
-    isWall: !node.isWall
+  if (!node.isStart && !node.isTarget) { // cannot set wall on start and target node
+    const newNode = {
+      ...node,
+      isWall: !node.isWall
+    }
+    // update new node on new grid
+    newGrid[row][col] = newNode;
   }
-  // update new node on new grid
-  newGrid[row][col] = newNode;
   return newGrid;
 };

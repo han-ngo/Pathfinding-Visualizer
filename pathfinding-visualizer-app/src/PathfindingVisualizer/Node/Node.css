@@ -2,25 +2,67 @@
   display: inline-flex;
   width: 25px;
   height: 25px;
-  outline: 1px solid rgb(123, 174, 213);
+  outline: 1px solid #994a3e;
 }
 
 .start-node {
-  background-color: rgb(48, 136, 72);
+  background-color: #4464ad;
 }
 
 .target-node {
-  background-color: rgb(211, 87, 46);
+  background-color: #fe6d73;
 }
 
 .visited-node {
-  background-color: rgba(170, 216, 234, 0.892);
+  animation-name: visitedAnimation;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out; /* Specifies an animation with a slow end */
+  background-color: #ffe5ec;
 }
 
 .wall-node {
-  background-color: rgb(153, 100, 213);
+  background-color: #800f2f;
 }
 
 .shortestPath-node {
+  animation-name: shortestPathAnimation;
+  animation-duration: 1.3s;
+  animation-timing-function: ease-out; /* Specifies an animation with a slow end */
   background-color: #fff369;
+}
+
+
+
+/* ANIMATION */
+
+/* the animation will gradually change from the current style to the new style at certain times. */
+@keyframes visitedAnimation {
+  0%   {
+    transform: scale(0.4);
+    background-color: #ffe5ec;
+    border-radius: 100%;
+  }
+  25%  {
+    background-color: #ffc2d1;
+  }
+  50%  {
+    transform: scale(1.2);
+    background-color: #ffb3c6;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #ff8fab;
+  }
+}
+
+@keyframes shortestPathAnimation {
+  0%   {
+    transform: scale(0.5);
+  }
+  50%  {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
