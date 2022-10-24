@@ -2,17 +2,25 @@
   display: inline-flex;
   width: 25px;
   height: 25px;
-  outline: 1px solid gray;
+  outline: 1px solid rgb(123, 174, 213);
 }
 
 .start-node {
-  background-color: aqua;
+  background-color: rgb(48, 136, 72);
 }
 
 .target-node {
-  background-color: pink;
+  background-color: rgb(211, 87, 46);
 }
 
-.shortestPath {
-  background-color: yellow;
+.visited-node {
+  background-color: rgba(170, 216, 234, 0.892);
+}
+
+.wall-node {
+  background-color: rgb(153, 100, 213);
+}
+
+.shortestPath-node {
+  background-color: #fff369;
 }

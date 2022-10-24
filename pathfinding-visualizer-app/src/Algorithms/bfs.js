@@ -1,3 +1,20 @@
+// Keep track of visited nodes
+let visited = [];
+
+/**
+ * Breadth First Search Algorithm
+ * 
+ * Keep track of shortest path to current node every time it's encountered
+ * in order to find shortest path from start to target node
+ * 
+ * Also keep track of all visited nodes in order
+ * for visualization purposes
+ * 
+ * @param {Array} grid the grid contains all nodes
+ * @param {Node} start starting node
+ * @param {Node} target target node
+ * @returns {Array} shortest path
+ */
 export function bfs(grid, start, target) {
 
   // Queue - tracking path tracing back to node
@@ -10,8 +27,15 @@ export function bfs(grid, start, target) {
     // explore next node in queue
     const curTrace = track.shift(); // pop Queue
     const curNode = getNodeById(grid, Object.keys(curTrace)[0]);
+
+    // skip wall node if encounter
+    if (curNode.isWall) {continue;}
+    // keep track of visited nodes
+    visited.push(curNode);
+
     const curNodeId = curNode.row + ' ' + curNode.col;
     const pathToCurNode = [].concat(curTrace[curNodeId]);
+
 
     // return path if curNode is target
     if (curNode === target) {
@@ -52,3 +76,6 @@ function getUnvisitedNeighbors(node, grid) {
   return neighbors.filter(neighbor => !neighbor.isVisited);
 }
 
+export function getVistedNodesInOrder() {
+  return visited;
+}
