@@ -8,10 +8,12 @@ export default class Node extends Component {
 	}
 
 	render() {
-		const {isStart, isTarget} = this.props;
+		const {row, col, isStart, isTarget} = this.props;
 		const nodeClassName = isStart ? 'start-node' : isTarget ? 'target-node' : '';
 		return (
-			<div className={`node ${nodeClassName}`}></div>
+			<div
+				id={`node-${row}-${col}`}
+				className={`node ${nodeClassName}`}></div>
 		);
 	}
 }
