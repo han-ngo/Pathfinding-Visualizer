@@ -1,5 +1,5 @@
 # Pathfinding-Visualizer
-Pathfinding Visualizer in JavaScript and React
+Pathfinding Visualizer in JavaScript and React and React-Bootstrap
 
 
 ### Steps to Run Pathfinding Visualizer locally.
