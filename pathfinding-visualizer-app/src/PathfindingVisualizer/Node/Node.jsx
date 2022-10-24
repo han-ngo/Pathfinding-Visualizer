@@ -9,7 +9,7 @@ export default class Node extends Component {
 
 	render() {
 		const {row, col, isStart, isTarget, isWall, onMouseDown, onMouseEnter, onMouseUp} = this.props;
-		const nodeClassName = isStart ? 'start-node' : isTarget ? 'target-node' : isWall ? 'wall-node' : '';
+		const nodeClassName = isStart ? 'start-node fas fa-location-arrow ' : isTarget ? 'target-node fas fa-star ' : isWall ? 'wall-node ' : '';
 		return (
 			<div
 				id={`node-${row}-${col}`}

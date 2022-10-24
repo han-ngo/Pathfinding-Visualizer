@@ -17,6 +17,9 @@ export default class PathfindingVisualizer extends Component {
 			grid: [],
       mouseIsPressed: false
 		};
+
+    // TODO: why have to bind???
+    this.visualizeBFS = this.visualizeBFS.bind(this);
 	}
 
 	render() {
@@ -24,9 +27,6 @@ export default class PathfindingVisualizer extends Component {
 
 		return (
       <>
-        <button onClick={() => this.visualizeBFS()}>
-          Visualize BFS Algorithm
-        </button>
         <div className='grid'>
           {grid.map((row, rowIndex) => {
             return <div className='row' key={rowIndex}>
@@ -59,6 +59,8 @@ export default class PathfindingVisualizer extends Component {
   componentDidMount() {
     const grid = initGrid();
     this.setState({grid});
+
+    document.getElementsByClassName('handle-visualize')[0].addEventListener('click', this.visualizeBFS);
   }
 
   handleMouseDown(row, col) {
@@ -123,7 +125,7 @@ export default class PathfindingVisualizer extends Component {
           document.getElementById(`node-${node.row}-${node.col}`).className =
             'node shortestPath-node';
         }
-      }, 50 * i);
+      }, 25 * i);
     }
   }
 }

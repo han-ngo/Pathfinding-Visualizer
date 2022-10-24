@@ -2,15 +2,21 @@
   display: inline-flex;
   width: 25px;
   height: 25px;
-  outline: 1px solid #994a3e;
+  outline: 1px solid #d69b95c1;
+}
+
+.fas, .fa-solid:before {
+  font-size: 24px;
+  contain: content;
 }
 
 .start-node {
-  background-color: #4464ad;
+  color: #4464ad;
+  font-size: 27px;
 }
 
 .target-node {
-  background-color: #fe6d73;
+  color: #fe6d73;
 }
 
 .visited-node {
@@ -31,8 +37,6 @@
   background-color: #fff369;
 }
 
-
-
 /* ANIMATION */
 
 /* the animation will gradually change from the current style to the new style at certain times. */
@@ -43,11 +47,11 @@
     border-radius: 100%;
   }
   25%  {
-    background-color: #ffc2d1;
+    background-color: #fff7c2;
   }
   50%  {
     transform: scale(1.2);
-    background-color: #ffb3c6;
+    background-color: #ffc3b3;
   }
   100% {
     transform: scale(1);
