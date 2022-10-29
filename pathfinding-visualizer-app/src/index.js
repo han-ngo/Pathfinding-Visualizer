@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -18,12 +19,13 @@ root.render(
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
 
             <NavDropdown title="Algorithms" id="basic-nav-dropdown">
               <NavDropdown.Item href="#bfs">BFS</NavDropdown.Item>
             </NavDropdown>
+
+            <Nav.Link href="#clear">Clear Board</Nav.Link>
+            <Nav.Link href="#link">Link</Nav.Link>
           </Nav>
 
           <Nav className="justify-content-end flex-grow-1 pe-3">
@@ -34,6 +36,10 @@ root.render(
         </Navbar.Collapse>
       </Container>
     </Navbar>
+
+    <Container>
+      <Alert key='light' variant='light' className='path-not-found'></Alert>
+    </Container>
     <Container><App /></Container>
     
   </React.StrictMode>

@@ -15,3 +15,7 @@ code {
 .container {
   max-width: 1300px;
 }
+
+.path-not-found {
+  text-align: center;
+}

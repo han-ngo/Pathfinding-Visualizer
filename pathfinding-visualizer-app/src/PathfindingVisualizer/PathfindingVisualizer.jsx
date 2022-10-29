@@ -8,7 +8,7 @@ const GRID_HEIGHT = 15,
       START_NODE_ROW = 10,
       START_NODE_COL = 10,
       TARGET_NODE_ROW = 5,
-      TARGET_NODE_COL = 20;
+      TARGET_NODE_COL = 45;
 
 export default class PathfindingVisualizer extends Component {
 	constructor(props) {
@@ -114,7 +114,7 @@ export default class PathfindingVisualizer extends Component {
 
   animateShortestPath(path) {
     if (!path) {
-      window.alert("Path is not found!");
+      this.alertPathNotFound();
       return;
     }
     for (let i = 0; i < path.length; i++) {
@@ -128,6 +128,11 @@ export default class PathfindingVisualizer extends Component {
       }, 25 * i);
     }
   }
+
+  alertPathNotFound() {
+    document.getElementsByClassName('path-not-found')[0].innerHTML = 'Path is NOT found! :(';
+  }
+
 }
 
 const createNode = (row, col) => {
