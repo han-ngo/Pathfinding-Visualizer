@@ -4,10 +4,10 @@ import {bfs, getVistedNodesInOrder} from '../Algorithms/bfs';
 import './PathfindingVisualizer.css'
 
 const GRID_HEIGHT = 15,
-      GRID_WIDTH  = 50,
-      START_NODE_ROW = 10,
+      GRID_WIDTH  = 50;
+let   START_NODE_ROW = 10,
       START_NODE_COL = 10,
-      TARGET_NODE_ROW = 5,
+      TARGET_NODE_ROW =  5,
       TARGET_NODE_COL = 45;
 
 export default class PathfindingVisualizer extends Component {
@@ -15,7 +15,8 @@ export default class PathfindingVisualizer extends Component {
 		super(props);
 		this.state = {
 			grid: [],
-      mouseIsPressed: false
+      mouseIsPressed: false,
+      pressedNode: undefined
 		};
 
     // TODO: why have to bind???
@@ -44,7 +45,7 @@ export default class PathfindingVisualizer extends Component {
                     mouseIsPressed={mouseIsPressed}
                     onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                     onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
-                    onMouseUp={() => this.handleMouseUp()}
+                    onMouseUp={(row, col) => this.handleMouseUp(row, col)}
                     ></Node>
                 );
             })}
@@ -65,20 +66,53 @@ export default class PathfindingVisualizer extends Component {
 
   handleMouseDown(row, col) {
     const newGrid = createNewGridOnWallToggled(this.state.grid, row, col);
-    this.setState({grid: newGrid, mouseIsPressed: true});
+    this.setState({grid: newGrid, mouseIsPressed: true, pressedNode: this.state.grid[row][col]});
   }
 
   /* Invoke when mouse hover on grid */
   handleMouseEnter(row, col) {
     // Only toggle wall if mouseIsPressed
-    if (this.state.mouseIsPressed) {
+    const startNode = this.state.grid[START_NODE_ROW][START_NODE_COL];
+    const targetNode = this.state.grid[TARGET_NODE_ROW][TARGET_NODE_COL];
+    if (this.state.mouseIsPressed && this.state.pressedNode !== startNode && this.state.pressedNode !== targetNode) {
       const newGrid = createNewGridOnWallToggled(this.state.grid, row, col);
       this.setState({grid: newGrid});
     }
   }
 
-  handleMouseUp() {
-    this.setState({mouseIsPressed: false});
+  handleMouseUp(row, col) {
+    const startNode = this.state.grid[START_NODE_ROW][START_NODE_COL];
+    const targetNode = this.state.grid[TARGET_NODE_ROW][TARGET_NODE_COL];
+    console.log(this.state.pressedNode);
+    if (this.state.pressedNode === startNode || this.state.pressedNode === targetNode) {
+      this.swapNodes(this.state.pressedNode, this.state.grid[row][col], this.state.pressedNode);
+    }
+    this.setState({mouseIsPressed: false, pressedNode: undefined});
+  }
+
+  swapNodes(oldNode, newNode, pressedNode) {
+    const startNode = this.state.grid[START_NODE_ROW][START_NODE_COL];
+    const targetNode = this.state.grid[TARGET_NODE_ROW][TARGET_NODE_COL];
+    switch (pressedNode) {
+      case startNode:
+        START_NODE_ROW = newNode.row;
+        START_NODE_COL = newNode.col;
+        newNode.isStart = true;
+        document.getElementById(`node-${newNode.row}-${newNode.col}`).className = 'node start-node fas fa-location-arrow';
+        oldNode.isStart = false;
+        document.getElementById(`node-${oldNode.row}-${oldNode.col}`).className = 'node';
+        break;
+      case targetNode:
+        TARGET_NODE_ROW = newNode.row;
+        TARGET_NODE_COL = newNode.col;
+        newNode.isTarget = true;
+        document.getElementById(`node-${newNode.row}-${newNode.col}`).className = 'node target-node fas fa-star';
+        oldNode.isTarget = false;
+        document.getElementById(`node-${oldNode.row}-${oldNode.col}`).className = 'node';
+        break;
+      default:
+        break;
+    }
   }
 
   visualizeBFS() {
@@ -89,7 +123,6 @@ export default class PathfindingVisualizer extends Component {
     const visitedNodesInOrder = getVistedNodesInOrder();
 
     this.animatePathFindingAlgo(path, visitedNodesInOrder);
-    // this.markPath(path);
   }
 
   animatePathFindingAlgo(path, visited) {
