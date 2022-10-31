@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
+import Alert from 'react-bootstrap/Alert';
+import Container from 'react-bootstrap/Container';
 import Node from './Node/Node';
-import {bfs, getVistedNodesInOrder} from '../Algorithms/bfs';
+import MyNavbar from './Navbar/MyNavbar';
+import {bfs, getBFSVistedNodesInOrder} from '../Algorithms/bfs';
 import './PathfindingVisualizer.css'
 
 const GRID_HEIGHT = 15,
@@ -15,12 +18,13 @@ export default class PathfindingVisualizer extends Component {
 		super(props);
 		this.state = {
 			grid: [],
+      algorithm: "",
       mouseIsPressed: false,
       pressedNode: undefined
 		};
 
     // TODO: why have to bind???
-    this.visualizeBFS = this.visualizeBFS.bind(this);
+    this.visualizeAlgorithm = this.visualizeAlgorithm.bind(this);
 	}
 
 	render() {
@@ -28,6 +32,11 @@ export default class PathfindingVisualizer extends Component {
 
 		return (
       <>
+        <MyNavbar onSelect={(e) => this.handleSelectAlgo(e)}/>
+        <Container>
+          <Alert key='light' variant='light' className='path-not-found'></Alert>
+        </Container>
+        <Container>
         <div className='grid'>
           {grid.map((row, rowIndex) => {
             return <div className='row' key={rowIndex}>
@@ -52,6 +61,7 @@ export default class PathfindingVisualizer extends Component {
             </div>
           })}
         </div>
+        </Container>
       </>
 		);
 	}
@@ -61,7 +71,12 @@ export default class PathfindingVisualizer extends Component {
     const grid = initGrid();
     this.setState({grid});
 
-    document.getElementsByClassName('handle-visualize')[0].addEventListener('click', this.visualizeBFS);
+    document.getElementsByClassName('handle-visualize')[0].addEventListener('click', this.visualizeAlgorithm);
+  }
+
+  handleSelectAlgo(event) {
+    document.getElementsByClassName('handle-visualize')[0].innerHTML = 'Visualize ' + event + ' Algorithm';
+    this.setState({algorithm: event});
   }
 
   handleMouseDown(row, col) {
@@ -83,7 +98,6 @@ export default class PathfindingVisualizer extends Component {
   handleMouseUp(row, col) {
     const startNode = this.state.grid[START_NODE_ROW][START_NODE_COL];
     const targetNode = this.state.grid[TARGET_NODE_ROW][TARGET_NODE_COL];
-    console.log(this.state.pressedNode);
     if (this.state.pressedNode === startNode || this.state.pressedNode === targetNode) {
       this.swapNodes(this.state.pressedNode, this.state.grid[row][col], this.state.pressedNode);
     }
@@ -115,12 +129,28 @@ export default class PathfindingVisualizer extends Component {
     }
   }
 
-  visualizeBFS() {
+  visualizeAlgorithm() {
     const {grid} = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const targetNode = grid[TARGET_NODE_ROW][TARGET_NODE_COL];
-    const path = bfs(grid, startNode, targetNode);
-    const visitedNodesInOrder = getVistedNodesInOrder();
+    let path, visitedNodesInOrder;
+
+    console.log('visualizing algorithm: ' + this.state.algorithm)
+    switch (this.state.algorithm) {
+      case 'BFS':
+        path = bfs(grid, startNode, targetNode);
+        visitedNodesInOrder = getBFSVistedNodesInOrder();
+        break;
+      case 'DFS':
+        break;
+      case 'Dijkstra':
+        break;
+      default:
+        // default to BFS algorithm
+        path = bfs(grid, startNode, targetNode);
+        visitedNodesInOrder = getBFSVistedNodesInOrder();
+        break;
+    }
 
     this.animatePathFindingAlgo(path, visitedNodesInOrder);
   }

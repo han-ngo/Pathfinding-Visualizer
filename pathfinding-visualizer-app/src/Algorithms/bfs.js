@@ -76,6 +76,6 @@ function getUnvisitedNeighbors(node, grid) {
   return neighbors.filter(neighbor => !neighbor.isVisited);
 }
 
-export function getVistedNodesInOrder() {
+export function getBFSVistedNodesInOrder() {
   return visited;
 }
