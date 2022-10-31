@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
 import Node from './Node/Node';
 import MyNavbar from './Navbar/MyNavbar';
@@ -32,10 +31,10 @@ export default class PathfindingVisualizer extends Component {
 
 		return (
       <>
-        <MyNavbar onSelect={(e) => this.handleSelectAlgo(e)}/>
-        <Container>
-          <Alert key='light' variant='light' className='path-not-found'></Alert>
-        </Container>
+        <MyNavbar 
+          onSelect={(e) => this.handleSelectAlgo(e)}
+          algoDesc={this.displayAlgoDesc()}
+        />
         <Container>
         <div className='grid'>
           {grid.map((row, rowIndex) => {
@@ -135,7 +134,6 @@ export default class PathfindingVisualizer extends Component {
     const targetNode = grid[TARGET_NODE_ROW][TARGET_NODE_COL];
     let path, visitedNodesInOrder;
 
-    console.log('visualizing algorithm: ' + this.state.algorithm)
     switch (this.state.algorithm) {
       case 'BFS':
         path = bfs(grid, startNode, targetNode);
@@ -146,32 +144,37 @@ export default class PathfindingVisualizer extends Component {
       case 'Dijkstra':
         break;
       default:
-        // default to BFS algorithm
-        path = bfs(grid, startNode, targetNode);
-        visitedNodesInOrder = getBFSVistedNodesInOrder();
+        this.handleAlgoNotPicked();
         break;
     }
 
     this.animatePathFindingAlgo(path, visitedNodesInOrder);
   }
 
+  handleAlgoNotPicked() {
+    document.getElementsByClassName('handle-visualize')[0].innerHTML = 'Pick an Algorithm!';
+  }
+
   animatePathFindingAlgo(path, visited) {
-    for (let i = 0; i <= visited.length; i++) {
-      // mark shortest path found
-      if (i === visited.length) {
-        setTimeout(() => {
-          this.animateShortestPath(path);
-        }, 10 * i);
-        return;
-      }
-      // mark node as visited
-      setTimeout(() => {
-        const node = visited[i];
-        if (!node.isStart && !node.isTarget) { // exclude animation on start & target node
-          document.getElementById(`node-${node.row}-${node.col}`).className =
-            'node visited-node';
+    if (path) {
+      console.log('visualizing algorithm: ' + this.state.algorithm)
+      for (let i = 0; i <= visited.length; i++) {
+        // mark shortest path found
+        if (i === visited.length) {
+          setTimeout(() => {
+            this.animateShortestPath(path);
+          }, 10 * i);
+          return;
         }
-      }, 10 * i);
+        // mark node as visited
+        setTimeout(() => {
+          const node = visited[i];
+          if (!node.isStart && !node.isTarget) { // exclude animation on start & target node
+            document.getElementById(`node-${node.row}-${node.col}`).className =
+              'node visited-node';
+          }
+        }, 10 * i);
+      }
     }
   }
 
@@ -194,6 +197,19 @@ export default class PathfindingVisualizer extends Component {
 
   alertPathNotFound() {
     document.getElementsByClassName('path-not-found')[0].innerHTML = 'Path is NOT found! :(';
+  }
+
+  displayAlgoDesc() {
+    switch (this.state.algorithm) {
+      case 'BFS':
+        return "Breath-first Search Algorithm is unweighted and guarantees the shortest path!"
+      case 'DFS':
+        return "Depth-first Search Algorithm is unweighted and does NOT guarantee the shortest path!"
+      case 'Dijkstra':
+        return "Dijkstra Algorithm is weighted and guarantees the shortest path!"
+      default:
+        return "Pick an algorithm to visualize!"
+    }
   }
 
 }
