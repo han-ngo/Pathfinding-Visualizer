@@ -1,8 +1,10 @@
+import $ from 'jquery';
 import React, {Component} from 'react';
 import Container from 'react-bootstrap/Container';
 import Node from './Node/Node';
 import MyNavbar from './Navbar/MyNavbar';
 import {bfs, getBFSVistedNodesInOrder} from '../Algorithms/bfs';
+import {dfs, getDFSVistedNodesInOrder} from '../Algorithms/dfs';
 import './PathfindingVisualizer.css'
 
 const GRID_HEIGHT = 15,
@@ -24,6 +26,7 @@ export default class PathfindingVisualizer extends Component {
 
     // TODO: why have to bind???
     this.visualizeAlgorithm = this.visualizeAlgorithm.bind(this);
+    this.clearBoard = this.clearBoard.bind(this);
 	}
 
 	render() {
@@ -71,10 +74,17 @@ export default class PathfindingVisualizer extends Component {
     this.setState({grid});
 
     document.getElementsByClassName('handle-visualize')[0].addEventListener('click', this.visualizeAlgorithm);
+    document.getElementsByClassName('clear-board')[0].addEventListener('click', this.clearBoard);
+  }
+
+  clearBoard() {
+    $('.path-not-found').empty();
+    createNewCleanGrid(this.state.grid);
+    this.setState({grid: this.state.grid});
   }
 
   handleSelectAlgo(event) {
-    document.getElementsByClassName('handle-visualize')[0].innerHTML = 'Visualize ' + event + ' Algorithm';
+    $('.handle-visualize').text('Visualize ' + event + ' Algorithm');
     this.setState({algorithm: event});
   }
 
@@ -129,10 +139,11 @@ export default class PathfindingVisualizer extends Component {
   }
 
   visualizeAlgorithm() {
-    const {grid} = this.state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const targetNode = grid[TARGET_NODE_ROW][TARGET_NODE_COL];
-    let path, visitedNodesInOrder;
+    const {grid} = this.state,
+          startNode = grid[START_NODE_ROW][START_NODE_COL],
+          targetNode = grid[TARGET_NODE_ROW][TARGET_NODE_COL];
+    let path = [],
+        visitedNodesInOrder = [];
 
     switch (this.state.algorithm) {
       case 'BFS':
@@ -140,6 +151,8 @@ export default class PathfindingVisualizer extends Component {
         visitedNodesInOrder = getBFSVistedNodesInOrder();
         break;
       case 'DFS':
+        path = dfs(grid, startNode, targetNode);
+        visitedNodesInOrder = getDFSVistedNodesInOrder();
         break;
       case 'Dijkstra':
         break;
@@ -152,29 +165,26 @@ export default class PathfindingVisualizer extends Component {
   }
 
   handleAlgoNotPicked() {
-    document.getElementsByClassName('handle-visualize')[0].innerHTML = 'Pick an Algorithm!';
+    $('.handle-visualize').text('Pick an Algorithm!');
   }
 
   animatePathFindingAlgo(path, visited) {
-    if (path) {
-      console.log('visualizing algorithm: ' + this.state.algorithm)
-      for (let i = 0; i <= visited.length; i++) {
-        // mark shortest path found
-        if (i === visited.length) {
-          setTimeout(() => {
-            this.animateShortestPath(path);
-          }, 10 * i);
-          return;
-        }
-        // mark node as visited
+    console.log('visualizing algorithm: ' + this.state.algorithm)
+    for (let i = 0; i <= visited.length; i++) {
+      // mark shortest path found
+      if (i === visited.length) {
         setTimeout(() => {
-          const node = visited[i];
-          if (!node.isStart && !node.isTarget) { // exclude animation on start & target node
-            document.getElementById(`node-${node.row}-${node.col}`).className =
-              'node visited-node';
-          }
+          this.animateShortestPath(path);
         }, 10 * i);
+        return;
       }
+      // mark node as visited
+      setTimeout(() => {
+        const node = visited[i];
+        if (!node.isStart && !node.isTarget) { // exclude animation on start & target node
+          $(`#node-${node.row}-${node.col}`).attr('class', 'node visited-node');
+        }
+      }, 10 * i);
     }
   }
 
@@ -188,15 +198,14 @@ export default class PathfindingVisualizer extends Component {
       setTimeout(() => {
         const node = path[i];
         if (!node.isStart && !node.isTarget) { // exclude animation on start & target node
-          document.getElementById(`node-${node.row}-${node.col}`).className =
-            'node shortestPath-node';
+          $(`#node-${node.row}-${node.col}`).attr('class', 'node shortestPath-node');
         }
       }, 25 * i);
     }
   }
 
   alertPathNotFound() {
-    document.getElementsByClassName('path-not-found')[0].innerHTML = 'Path is NOT found! :(';
+    $('.path-not-found').text('Path is NOT found! :(');
   }
 
   displayAlgoDesc() {
@@ -252,4 +261,18 @@ const createNewGridOnWallToggled = (grid, row, col) => {
     newGrid[row][col] = newNode;
   }
   return newGrid;
+};
+
+const createNewCleanGrid = (grid) => {
+  for (let row = 0; row < GRID_HEIGHT; row++) {
+    for (let col = 0; col < GRID_WIDTH; col++) {
+      const node = grid[row][col];
+      // reset all settings
+      node.isVisited = false;
+      node.isWall = false;
+      if (!node.isStart && !node.isTarget) { // exclude start and target node
+        $(`#node-${node.row}-${node.col}`).attr('class', 'node');
+      }
+    }
+  }
 };

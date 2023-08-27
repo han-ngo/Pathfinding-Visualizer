@@ -30,8 +30,8 @@ export default class MyNavbar extends Component {
                   <NavDropdown.Item eventKey="DFS" href="#">Depth-first Search</NavDropdown.Item>
                 </NavDropdown>
 
-                <Nav.Link href="#clear">Clear Board</Nav.Link>
-                <Nav.Link href="#link">Link</Nav.Link>
+                <Nav.Link className="clear-board" href="#">Clear Board</Nav.Link>
+                <Nav.Link href="#">Link</Nav.Link>
               </Nav>
 
               <Nav className="justify-content-end flex-grow-1 pe-3">

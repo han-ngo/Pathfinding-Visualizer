@@ -18,14 +18,14 @@ let visited = [];
 export function bfs(grid, start, target) {
 
   // Queue - tracking path tracing back to node
-  let track = [{
+  let trackQueue = [{
     [start.row + ' ' + start.col]: []
   }];
 
   // Breadth First Search
-  while (track.length !== 0) {
+  while (trackQueue.length !== 0) {
     // explore next node in queue
-    const curTrace = track.shift(); // pop Queue
+    const curTrace = trackQueue.shift(); // pop Queue
     const curNode = getNodeById(grid, Object.keys(curTrace)[0]);
 
     // skip wall node if encounter
@@ -53,7 +53,7 @@ export function bfs(grid, start, target) {
       // add unvisited neighbor & its path to Queue
       for (let unvistedNeighbor of unvisitedNeighbors) {
           const unvistedNeighborId = unvistedNeighbor.row + ' ' + unvistedNeighbor.col;
-          track.push({[unvistedNeighborId]: pathToCurNode});
+          trackQueue.push({[unvistedNeighborId]: pathToCurNode});
       }
     }
   }
